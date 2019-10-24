@@ -113,6 +113,11 @@ namespace Coffee.PackageManager
 			});
 		}
 
+		public static void GetPackagePathFromUpmJson(string repoUrl, string branch, Action<string> callback)
+		{
+			throw new NotImplementedException();
+		}
+
 		public static void GetPackageJson (string repoUrl, string branch, Action<string> callback)
 		{
 			// package.json is cached.
@@ -125,57 +130,61 @@ namespace Coffee.PackageManager
 			}
 
 			// Download raw package.json from host.
-			using (var wc = new System.Net.WebClient ())
+			GetPackagePathFromUpmJson(repoUrl, branch, packageJsonPath =>
 			{
-				string userAndRepoName = PackageUtils.GetUserAndRepo (repoUrl);
-				var host = Settings.GetHostData (repoUrl);
-				Uri uri = new Uri (string.Format (host.Raw, userAndRepoName, branch, "package.json"));
-
-				wc.DownloadStringCompleted += (s, e) =>
+				using (var wc = new System.Net.WebClient ())
 				{
-					IsGitRunning = false;
+					string userAndRepoName = PackageUtils.GetUserAndRepo (repoUrl);
+					var host = Settings.GetHostData (repoUrl);
 
-					// Download is completed successfully.
-					if (e.Error == null)
+					Uri uri = new Uri (string.Format (host.Raw, userAndRepoName, branch, packageJsonPath));
+
+					wc.DownloadStringCompleted += (s, e) =>
 					{
-						try
+						IsGitRunning = false;
+
+						// Download is completed successfully.
+						if (e.Error == null)
 						{
-							// Check meta file.
-							wc.DownloadData (new Uri (string.Format (host.Raw, userAndRepoName, branch, "package.json.meta")));
-							if (!string.IsNullOrEmpty (e.Result))
+							try
 							{
-								EditorKvs.Set (cacheKey, e.Result);
+								// Check meta file.
+								wc.DownloadData (new Uri (string.Format (host.Raw, userAndRepoName, branch, "package.json.meta")));
+								if (!string.IsNullOrEmpty (e.Result))
+								{
+									EditorKvs.Set (cacheKey, e.Result);
+								}
+								callback (PackageJsonHelper.GetPackageNameFromJson (e.Result));
+								return;
 							}
-							callback (PackageJsonHelper.GetPackageNameFromJson (e.Result));
-							return;
+							// Maybe, package.json.meta is not found.
+							catch (Exception ex)
+							{
+								Debug.LogException(ex);
+								callback ("");
+							}
 						}
-						// Maybe, package.json.meta is not found.
-						catch (Exception ex)
-						{
-							Debug.LogException(ex);
-							callback ("");
-						}
-					}
 
-					// Download is failed: Clone the repo to get package.json.
-					string clonePath = Path.GetTempFileName ();
-					FileUtil.DeleteFileOrDirectory (clonePath);
-					string args = string.Format ("clone --depth=1 --branch {0} --single-branch {1} {2}", branch, repoUrl, clonePath);
-					ExecuteGitCommand (args, (_, __) =>
-					{
-						// Get package.json from cloned repo.
-						string filePath = Path.Combine (clonePath, "package.json");
-						string json = File.Exists (filePath) && File.Exists (filePath + ".meta") ? File.ReadAllText (filePath) : "";
-						if (!string.IsNullOrEmpty (json))
+						// Download is failed: Clone the repo to get package.json.
+						string clonePath = Path.GetTempFileName ();
+						FileUtil.DeleteFileOrDirectory (clonePath);
+						string args = string.Format ("clone --depth=1 --branch {0} --single-branch {1} {2}", branch, repoUrl, clonePath);
+						ExecuteGitCommand (args, (_, __) =>
 						{
-							EditorKvs.Set (cacheKey, json);
-						}
-						callback (PackageJsonHelper.GetPackageNameFromJson (json));
-					});
-				};
-				IsGitRunning = true;
-				wc.DownloadStringAsync (uri);
-			}
+							// Get package.json from cloned repo.
+							string filePath = Path.Combine (clonePath, "package.json");
+							string json = File.Exists (filePath) && File.Exists (filePath + ".meta") ? File.ReadAllText (filePath) : "";
+							if (!string.IsNullOrEmpty (json))
+							{
+								EditorKvs.Set (cacheKey, json);
+							}
+							callback (PackageJsonHelper.GetPackageNameFromJson (json));
+						});
+					};
+					IsGitRunning = true;
+					wc.DownloadStringAsync (uri);
+				}
+			});
 		}
 
 		static void ExecuteGitCommand (string args, GitCommandCallback callback)

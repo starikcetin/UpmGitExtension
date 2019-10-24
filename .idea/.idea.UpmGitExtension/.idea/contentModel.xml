@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\cetin\.Rider2019.1\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\cetin\.Rider2019.1\system\extResources" t="IncludeRecursive" />
+    <e p="F:\UpmGitExtension" t="IncludeRecursive">
+      <e p="Assets" t="Include">
+        <e p="Tests" t="Include">
+          <e p="Coffee.UpmGitExtension.EditorTests.asmdef" t="Include" />
+          <e p="Editor" t="Include">
+            <e p="UtilsTests.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Coffee.UpmGitExtension.Editor.csproj" t="IncludeRecursive" />
+      <e p="Coffee.UpmGitExtension.EditorTests.csproj" t="IncludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive">
+        <e p="UpmGitExtension" t="Include">
+          <e p="Editor" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Coffee.UpmGitExtension.Editor.asmdef" t="Include" />
+            <e p="Markdig" t="Include">
+              <e p="license.txt" t="Include" />
+              <e p="Markdig.xml" t="Include" />
+            </e>
+            <e p="Resources" t="Include">
+              <e p="DocumentActions.uss" t="Include" />
+              <e p="DocumentActions.uxml" t="Include" />
+              <e p="GitButton.uss" t="Include" />
+              <e p="InstallPackageWindow.uss" t="Include" />
+              <e p="InstallPackageWindow.uxml" t="Include" />
+            </e>
+            <e p="Scripts" t="Include">
+              <e p="Common" t="Include">
+                <e p="EditorKvs.cs" t="Include" />
+                <e p="Expose.cs" t="Include" />
+                <e p="Utils.cs" t="Include" />
+              </e>
+              <e p="Settings.cs" t="Include" />
+              <e p="UI" t="Include">
+                <e p="DocumentActions.cs" t="Include" />
+                <e p="GitButton.cs" t="Include" />
+                <e p="InstallPackageWindow.cs" t="Include" />
+              </e>
+              <e p="UpmGitExtension.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Temp\bin" t="ExcludeRecursive" />
+      <e p="UpmGitExtension.sln" t="IncludeFlat" />
+    </e>
+    <e p="G:\.meta and utilities\Resharper Cache\_UpmGitExtension.-358451276.RD.00" t="ExcludeRecursive" />
+  </component>
+</project>
